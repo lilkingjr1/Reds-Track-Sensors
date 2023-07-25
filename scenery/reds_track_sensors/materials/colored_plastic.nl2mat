@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <material>
+    <description>Matte, Entity 0 colored, plastic, with optional scratches coloring.</description>
+    <renderpass>
+      <shadercore>Result = Mul(tex0, entity0);
+Roughness = tex2;</shadercore>
+      <transparency mode="opaque"/>
+      <linearshading/>
+      <rgbgen mode="bumplighting"/>
+      <texunit>
+        <animmap frequency="0">
+          <map>intern:data/textures/fx/white.png</map>
+          <map>textures/scratches_color.jpg</map>
+        </animmap>
+        <tcgen mode="base"/>
+      </texunit>
+      <texunit>
+        <map>textures/scratches_bump.jpg</map>
+        <bump mode="heightgloss" heightscale="5"/>
+        <tcgen mode="base"/>
+      </texunit>
+      <texunit>
+        <animmap frequency="0">
+          <map>intern:data/textures/fx/white.png</map>
+          <map>textures/scratches_roughness.jpg</map>
+        </animmap>
+        <tcgen mode="base"/>
+      </texunit>
+    </renderpass>
+  </material>
+</root>

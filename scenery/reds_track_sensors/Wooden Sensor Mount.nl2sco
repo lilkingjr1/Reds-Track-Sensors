@@ -6,7 +6,7 @@
     </model>
     <description>Foot long wooden block to mount sensors on for wooden coasters.</description>
     <defaultinstancename>Wooden Sensor Mount</defaultinstancename>
-    <preview>textures/previews/wooden_sensor_mount.png</preview>
+    <preview>materials/previews/wooden_sensor_mount.png</preview>
     <usercolor>
       <label>Wood Color</label>
       <index>0</index>
@@ -59,6 +59,6 @@
       <description>Will rotate this amount when snapping is enabled. Used for flipping the orientation of mount if desired.</description>
       <label>Degrees to Rotate (Y Axis):</label>
     </scriptparameter>
-    <materialpath name="wood">textures/colored_wood.nl2mat</materialpath>
+    <materialpath name="wood">materials/colored_wood.nl2mat</materialpath>
   </sceneobject>
 </root>

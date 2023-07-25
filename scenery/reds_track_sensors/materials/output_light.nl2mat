@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <material>
+    <description>Output light material (animation ready), with Entity 2 color and emission.</description>
+    <renderpass>
+      <shadercore>Result = Mul(entity2, tex0);
+Specular = entity2;
+Emission = Mul(entity2, tex1); // Tone emmission color down with grey</shadercore>
+      <transparency mode="opaque"/>
+      <linearshading/>
+      <custommaterial>
+        <shininess exponent="128"/>
+      </custommaterial>
+      <reflection affectedbyspecular="true" fresnelconst="0.05" fresnelvar="0.4"/>
+      <rgbgen mode="lighting"/>
+      <texunit>
+        <animmap frequency="2">
+          <map>textures/gray.png</map>
+          <map>intern:data/textures/fx/white.png</map>
+        </animmap>
+        <tcgen mode="base"/>
+      </texunit>
+      <texunit>
+        <animmap frequency="2">
+          <map>intern:data/textures/fx/black.png</map>
+          <map>textures/light_gray.png</map>
+        </animmap>
+        <tcgen mode="base"/>
+      </texunit>
+    </renderpass>
+  </material>
+</root>

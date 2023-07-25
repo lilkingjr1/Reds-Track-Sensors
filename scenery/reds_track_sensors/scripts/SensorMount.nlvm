@@ -1,8 +1,9 @@
-// Sensor Mount NL2 Script
-// David Wolfe (Red-Thirten)
-// 8/15/2021
-// Initializes the sensor mount by snapping it to the closest track, and adjusting relative to that, if specified. Also handles special track movement.
-// Licensed under GNU GPLv3 - See LICENSE for more details.
+/**Sensor Mount NL2 Script**
+	Author: David Wolfe (Red-Thirten)
+	Date: 07/25/2023
+	Initializes the sensor mount by snapping it to the closest track, and adjusting relative to that, if specified. Also handles special track movement.
+	Licensed under GNU GPLv3 - See LICENSE for more details.
+*/
 
 import com.nolimitscoaster.Script;
 import com.nolimitscoaster.SceneObject;
@@ -11,23 +12,22 @@ import com.nolimitscoaster.TrackPos;
 import nlvm.math3d.Vector3f;
 import nlvm.lang.Math;
 
+import util.SpecialTrackModule;
+
 public class SensorMount extends Script{
-	protected String SCRIPT_NAME = "Sensor Mount";			// Name of script for debugging
-	public static String MOUNT_ELEMENT_NAME = "mount";		// Mount element name
-	protected float TRACK_SEARCH_DIST = 5.f;				// Minimum distance (meters) the mount needs to be near the track to snap
-	private static final int[] INVERTED_COASTERS = {2, 4, 14, 15, 16, 23}; // All inverted coaster IDs in NL2, as of this file's creation date
+	private static final String SCRIPT_NAME = "Sensor Mount";	// Name of script for debugging
+	public static final String MOUNT_ELEMENT_NAME = "mount";	// Mount element name
+	private static final float TRACK_SEARCH_DIST = 5.f;			// Minimum distance (meters) the mount needs to be near the track to snap
+	private static final int[] INVERTED_COASTERS = {2, 4, 14, 15, 16, 23};	// All inverted coaster IDs in NL2, as of this file's creation date
 	
 	private SpecialTrackModule specialTrackLogic;
-	
-	private bool initSuccessful = true;
 	
 	public bool onInit(){ // On initialization of Play simulation
 		// Get and assign local sco
 		SceneObject sco = getScoFromParentEntity();
 		
-		// Get element, and fail if invalid.
+		// Get mount element
 		SceneObjectElement mount = getElementOnScoForName(sco, MOUNT_ELEMENT_NAME);
-		if (!initSuccessful){ return false; } // Catch initialization failures.
 		
 		// Snap SCO to closest track piece if possible, and adjust sub-assembly mount element attributes as specified.
 		// This keeps all matrix adjustments relative to the track position and angle.
@@ -51,7 +51,11 @@ public class SensorMount extends Script{
 					}
 				}
 				// Set Y axis rotation as specified
-				mount.setRotation(0.f, (float) Math.toRadians(sco.getIntegerParameter("mount_rot_y").doubleValue()), zRotation);
+				mount.setRotation(
+					0.f,
+					(float) Math.toRadians(sco.getIntegerParameter("mount_rot_y").doubleValue()),
+					zRotation
+				);
 			}
 			else{ // Track not found within search distance
 				if (sco.getName().length() > 0){
@@ -70,20 +74,20 @@ public class SensorMount extends Script{
 		return true;
 	}
 	
-	private SceneObject getScoFromParentEntity(){ // Returns the SceneObject via the parent entity ID with error handling
+	private SceneObject getScoFromParentEntity(){
+		// Returns the SceneObject via the parent entity ID with error handling
         SceneObject sco = sim.getSceneObjectForEntityId(getParentEntityId());
         if (sco == null){
-			initSuccessful = false;
-            System.err.println(SCRIPT_NAME + ": This script only works with NL2 scene objects");
+            System.throwRuntimeException(SCRIPT_NAME + ": This script only works with NL2 scene objects");
         }
         return sco;
     }
 	
-	private SceneObjectElement getElementOnScoForName(SceneObject sco, String name){ // Basically getElementForName() with error handling - Gratz to bestdani for idea
+	private SceneObjectElement getElementOnScoForName(SceneObject sco, String name){
+		// Basically getElementForName() with error handling - Gratz to bestdani for idea
         SceneObjectElement element = sco.getElementForName(name);
         if (element == null){
-			initSuccessful = false;
-            System.err.println(SCRIPT_NAME + ": Wrong 3d model loaded (Cannot find \"" + name + "\" element)");
+            System.throwRuntimeException(SCRIPT_NAME + ": Wrong 3d model loaded (Cannot find \"" + name + "\" element)");
         }
         return element;
     }

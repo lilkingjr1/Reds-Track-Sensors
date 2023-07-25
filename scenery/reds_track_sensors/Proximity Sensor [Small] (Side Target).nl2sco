@@ -7,7 +7,7 @@
     </model>
     <description>Small size. Recolorable and scripted to detect train. See object properties for more.</description>
     <defaultinstancename>Proximity Sensor [Small] (Side Target)</defaultinstancename>
-    <preview>textures/previews/proximity_sensor_small_side.png</preview>
+    <preview>materials/previews/proximity_sensor_small_side.png</preview>
     <usercolor>
       <label>Sensor Color</label>
       <index>0</index>
@@ -127,14 +127,14 @@
       <description>Will rotate this amount in the Z axis, relative to the Center of Rails angle.</description>
       <label>CoR Rotation Z (Deg):</label>
     </scriptparameter>
-    <materialpath name="black_plastic">textures/plastic_black.nl2mat</materialpath>
-    <materialpath name="bullseye">textures/logo.nl2mat</materialpath>
-    <materialpath name="colored_plastic">textures/colored_plastic.nl2mat</materialpath>
-    <materialpath name="colored_plastic_0">textures/colored_plastic.nl2mat</materialpath>
-    <materialpath name="logo">textures/bullseye.nl2mat</materialpath>
-    <materialpath name="metal">textures/metal.nl2mat</materialpath>
-    <materialpath name="metal_galvanized">textures/metal_galvanized.nl2mat</materialpath>
-    <materialpath name="output_light">textures/output_light.nl2mat</materialpath>
-    <materialpath name="power_light">textures/power_light.nl2mat</materialpath>
+    <materialpath name="black_plastic">materials/plastic_black.nl2mat</materialpath>
+    <materialpath name="bullseye">materials/logo.nl2mat</materialpath>
+    <materialpath name="colored_plastic">materials/colored_plastic.nl2mat</materialpath>
+    <materialpath name="colored_plastic_0">materials/colored_plastic.nl2mat</materialpath>
+    <materialpath name="logo">materials/bullseye.nl2mat</materialpath>
+    <materialpath name="metal">materials/metal.nl2mat</materialpath>
+    <materialpath name="metal_galvanized">materials/metal_galvanized.nl2mat</materialpath>
+    <materialpath name="output_light">materials/output_light.nl2mat</materialpath>
+    <materialpath name="power_light">materials/power_light.nl2mat</materialpath>
   </sceneobject>
 </root>

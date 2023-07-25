@@ -6,7 +6,7 @@
     </model>
     <description>A 5m rail for sensors to be mounted to. See object properties for more.</description>
     <defaultinstancename>Sensor Mounting Rail (5m)</defaultinstancename>
-    <preview>textures/previews/sensor_mounting_rail_5m.png</preview>
+    <preview>materials/previews/sensor_mounting_rail_5m.png</preview>
     <usercolor>
       <label>Mount Color</label>
       <index>0</index>

@@ -7,7 +7,7 @@
     </model>
     <description>A rail, typically found on Arrow coasters, for sensors to be mounted to. See object properties for more.</description>
     <defaultinstancename>Sensor Mounting Rail [Arrow]</defaultinstancename>
-    <preview>textures/previews/sensor_mounting_rail_arrow.png</preview>
+    <preview>materials/previews/sensor_mounting_rail_arrow.png</preview>
     <usercolor>
       <label>Mount Color</label>
       <index>0</index>
@@ -61,7 +61,7 @@
       <label>Degrees to Rotate (Y Axis):</label>
     </scriptparameter>
     <materialpath name="metal">intern:data/materials/metal/Metal A User0.nl2mat</materialpath>
-    <materialpath name="screw">textures/metal.nl2mat</materialpath>
-    <materialpath name="wood">textures/colored_wood.nl2mat</materialpath>
+    <materialpath name="screw">materials/metal.nl2mat</materialpath>
+    <materialpath name="wood">materials/colored_wood.nl2mat</materialpath>
   </sceneobject>
 </root>

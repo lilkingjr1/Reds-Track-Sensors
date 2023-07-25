@@ -8,7 +8,7 @@
     </model>
     <description>Larger square sensor. Recolorable and scripted to detect train. See object properties for more.</description>
     <defaultinstancename>Proximity Sensor [Square]</defaultinstancename>
-    <preview>textures/previews/proximity_sensor_square.png</preview>
+    <preview>materials/previews/proximity_sensor_square.png</preview>
     <usercolor>
       <label>Sensor Color</label>
       <index>0</index>
@@ -128,19 +128,19 @@
       <description>Will rotate this amount in the Z axis, relative to the Center of Rails angle.</description>
       <label>CoR Rotation Z (Deg):</label>
     </scriptparameter>
-    <materialpath name="black_plastic">textures/plastic_black.nl2mat</materialpath>
-    <materialpath name="colored_plastic">textures/colored_plastic.nl2mat</materialpath>
-    <materialpath name="logo">textures/logo_square.nl2mat</materialpath>
-    <materialpath name="metal">textures/metal.nl2mat</materialpath>
-    <materialpath name="metal_0">textures/metal.nl2mat</materialpath>
-    <materialpath name="metal_galvanized">textures/metal_galvanized.nl2mat</materialpath>
-    <materialpath name="output_light">textures/output_light.nl2mat</materialpath>
-    <materialpath name="power_light">textures/power_light.nl2mat</materialpath>
-    <materialpath name="screw">textures/screw_philips.nl2mat</materialpath>
-    <materialpath name="screw_0">textures/screw_philips.nl2mat</materialpath>
-    <materialpath name="screw_1">textures/screw_philips.nl2mat</materialpath>
-    <materialpath name="screw_2">textures/screw_philips.nl2mat</materialpath>
-    <materialpath name="screw_3">textures/screw_philips.nl2mat</materialpath>
-    <materialpath name="screw_4">textures/screw_philips.nl2mat</materialpath>
+    <materialpath name="black_plastic">materials/plastic_black.nl2mat</materialpath>
+    <materialpath name="colored_plastic">materials/colored_plastic.nl2mat</materialpath>
+    <materialpath name="logo">materials/logo_square.nl2mat</materialpath>
+    <materialpath name="metal">materials/metal.nl2mat</materialpath>
+    <materialpath name="metal_0">materials/metal.nl2mat</materialpath>
+    <materialpath name="metal_galvanized">materials/metal_galvanized.nl2mat</materialpath>
+    <materialpath name="output_light">materials/output_light.nl2mat</materialpath>
+    <materialpath name="power_light">materials/power_light.nl2mat</materialpath>
+    <materialpath name="screw">materials/screw_philips.nl2mat</materialpath>
+    <materialpath name="screw_0">materials/screw_philips.nl2mat</materialpath>
+    <materialpath name="screw_1">materials/screw_philips.nl2mat</materialpath>
+    <materialpath name="screw_2">materials/screw_philips.nl2mat</materialpath>
+    <materialpath name="screw_3">materials/screw_philips.nl2mat</materialpath>
+    <materialpath name="screw_4">materials/screw_philips.nl2mat</materialpath>
   </sceneobject>
 </root>

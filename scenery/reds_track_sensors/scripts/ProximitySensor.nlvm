@@ -1,8 +1,9 @@
-// Proximity Sensor NL2 Script
-// David Wolfe (Red-Thirten)
-// 4/29/2022
-// Initializes the proximity sensor, adjusts it's physical properties via a parsed config file or user settings, and animates it's output light.
-// Licensed under GNU GPLv3 - See LICENSE for more details.
+/**Proximity Sensor NL2 Script**
+	Author: David Wolfe (Red-Thirten)
+	Date: 07/25/2023
+	Initializes the proximity sensor, adjusts it's physical properties via a parsed config file or user settings, and animates it's output light.
+	Licensed under GNU GPLv3 - See LICENSE for more details.
+*/
 
 import com.nolimitscoaster.Script;
 import com.nolimitscoaster.SceneObject;
@@ -17,64 +18,75 @@ import nlvm.lang.StringBuilder;
 import nlvm.math3d.Vector3f;
 import nlvm.lang.Math;
 
+import util.SpecialTrackModule;
+
 public class ProximitySensor extends Script implements TrackTriggerListener{
-	protected String SCRIPT_NAME = "Proximity Sensor";		// Script name for debugging
-	protected String SENSOR_ELEMENT_NAME = "sensor";		// Main sensor body element name
-	protected String LIGHT_ELEMENT_NAME = "output";			// Output light element name
-	protected String MOUNT_ELEMENT_NAME = "mount";			// Mounting hardware element name
-	protected String WIRE_ELEMENT_NAME = "wire";			// Wire element name
-	protected float TRACK_SEARCH_DIST = 5.f;				// Minimum distance sensor needs to be near track to enable lights
+	private static final String SCRIPT_NAME = "Proximity Sensor";	// Script name for debugging
+	private static final String SENSOR_ELEMENT_NAME = "sensor";		// Main sensor body element name
+	private static final String LIGHT_ELEMENT_NAME = "output";		// Output light element name
+	private static final String MOUNT_ELEMENT_NAME = "mount";		// Mounting hardware element name
+	private static final String WIRE_ELEMENT_NAME = "wire";			// Wire element name
+	private static final float TRACK_SEARCH_DIST = 5.f;				// Minimum distance sensor needs to be near track to enable lights
 	
 	private SceneObjectElement light;
 	private TrackTrigger sensorTrigger;
 	
 	private SpecialTrackModule specialTrackLogic;
 	
-	private bool initSuccessful = true;
 	private bool lightDisabled = false;
 	
 	public bool onLateInit(){ // On late initialization of Play simulation
 		// Get and assign local sco
 		SceneObject sco = getScoFromParentEntity();
 		
-		// Get all elements, and fail if invalid.
+		// Get all elements
 		light = getElementOnScoForName(sco, LIGHT_ELEMENT_NAME);
 		SceneObjectElement sensor = getElementOnScoForName(sco, SENSOR_ELEMENT_NAME);
 		SceneObjectElement mount = getElementOnScoForName(sco, MOUNT_ELEMENT_NAME);
 		SceneObjectElement wire = getElementOnScoForName(sco, WIRE_ELEMENT_NAME);
-		if (!initSuccessful){ return false; }
 		
 		String snapMountName = sco.getStringParameter("mount"); // Get the name of the mount-to-snap-to
 		// Snap-to-Mount if enabled and Snap-to-Track is disabled
 		if (!sco.getBooleanParameter("enable_track_snap").boolValue() && snapMountName.length() > 0){
 			SceneObject[] allMounts = sim.getSceneObjectsWithName(snapMountName); // Get list of all mounts with same name
 			if (allMounts.length > 0){ // Any mount(s) found
-				// Compare all mounts' elements to find closest
-				SceneObject closestMount = allMounts[0];
-				for ( int i = 1; i < allMounts.length; i++ ) {
-					// Note: MOUNT_ELEMENT_NAME is referring to the SensorMount object's variable
-					if (sco.getTranslation().distance(allMounts[i].getElementForName(SensorMount.MOUNT_ELEMENT_NAME).getAbsoluteMatrix().getTrans())
-					< sco.getTranslation().distance(closestMount.getElementForName(SensorMount.MOUNT_ELEMENT_NAME).getAbsoluteMatrix().getTrans())) {
-						closestMount = allMounts[i];
-					}
-				}
-				// Snap to closest mount
 				// Store original SCO orientation values
 				Vector3f scoTransOrig = sco.getTranslation();
 				Vector3f scoRotationOrig = sco.getRotation();
 				Vector3f scoScaleOrig = sco.getScale();
-				// Set SCO to matrix of mount element to obtain the mount's element's rotation data.
-				// Currently, there is no easy way to obtain rotation data of a foreign element directly, because SceneObjectElement and Matrix4x4f lack "getRotation()" functions.
+				// Compare all mounts' elements to find closest
+				SceneObject closestMount = allMounts[0];
+				for ( int i = 1; i < allMounts.length; i++ ) {
+					// Note: MOUNT_ELEMENT_NAME is referring to the SensorMount object's variable
+					if (scoTransOrig.distance(allMounts[i].getElementForName(SensorMount.MOUNT_ELEMENT_NAME).getAbsoluteTranslation())
+					< scoTransOrig.distance(closestMount.getElementForName(SensorMount.MOUNT_ELEMENT_NAME).getAbsoluteTranslation())) {
+						closestMount = allMounts[i];
+					}
+				}
+				// Snap to closest mount
+				/* 	Set SCO to matrix of mount element to obtain the mount's element's rotation data.
+					Currently, there is no easy way to obtain rotation data of a foreign element directly,
+					because SceneObjectElement and Matrix4x4f lack "getRotation()" functions. */
 				sco.setMatrix(closestMount.getElementForName(SensorMount.MOUNT_ELEMENT_NAME).getAbsoluteMatrix());
 				sco.setScale(scoScaleOrig); // Restore original scale
 				float xAngle = sco.getRotation().x; // Define X Angle of mount element (via SCO's new rotation data)
 				float yAngle = sco.getRotation().y; // Define Y Angle of mount element (via SCO's new rotation data)
-				// Calculate a unit vector on the +Z axis relative to the mount element's angle.
-				// This represents a rudimentary "line" that all the mounts inherently define with their geometry.
-				Vector3f lineVec = new Vector3f( (float) Math.cos(xAngle) * (float) Math.sin(yAngle), -(float) Math.sin(xAngle), (float) Math.cos(xAngle) * (float) Math.cos(yAngle) );
-				// Using the mount's translation, "line" vector and the SCO's original translation, 
-				// calculate the closest absolute translation point on the mount from the sensor, and set the sensor to it.
-				sco.setTranslation( nearestPointOnLine(closestMount.getElementForName(SensorMount.MOUNT_ELEMENT_NAME).getAbsoluteMatrix().getTrans(), lineVec, scoTransOrig) );
+				/*	Calculate a unit vector on the +Z axis relative to the mount element's angle.
+					This represents a rudimentary "line" that all the mounts inherently define with their geometry. */
+				Vector3f lineVec = new Vector3f(
+					(float) Math.cos(xAngle) * (float) Math.sin(yAngle),
+					-(float) Math.sin(xAngle),
+					(float) Math.cos(xAngle) * (float) Math.cos(yAngle)
+				);
+				/*	Using the mount's translation, "line" vector and the SCO's original translation, 
+					calculate the closest absolute translation point on the mount from the sensor, and set the sensor to it. */
+				sco.setTranslation(
+					nearestPointOnLine(
+						closestMount.getElementForName(SensorMount.MOUNT_ELEMENT_NAME).getAbsoluteTranslation(),
+						lineVec,
+						scoTransOrig
+					)
+				);
 				// Set correct orientation of sensor for the given mount name via the config file
 				Vector3f[] orientValues = getSnapOrientFromConfig(snapMountName);
 				if (orientValues != null){
@@ -105,8 +117,8 @@ public class ProximitySensor extends Script implements TrackTriggerListener{
 			}
 		}
 		
-		// Find closes track position to sensor's current position for indicator light and snapping (if enabled)
-		TrackPos trackPos = sim.findNearestCoasterTrack(sensor.getAbsoluteMatrix().getTrans(), TRACK_SEARCH_DIST);
+		// Find closest track position to sensor's current position for indicator light and snapping (if enabled)
+		TrackPos trackPos = sim.findNearestCoasterTrack(sensor.getAbsoluteTranslation(), TRACK_SEARCH_DIST);
 		if (trackPos != null){
 			// Set up track trigger for indicator light
 			sensorTrigger = TrackTrigger.createTrackTriggerAtOffset(trackPos, 0);
@@ -173,20 +185,20 @@ public class ProximitySensor extends Script implements TrackTriggerListener{
 		return true;
 	}
 	
-	private SceneObject getScoFromParentEntity(){ // Returns the SceneObject via the parent entity ID with error handling
+	private SceneObject getScoFromParentEntity(){
+		// Returns the SceneObject via the parent entity ID with error handling
         SceneObject sco = sim.getSceneObjectForEntityId(getParentEntityId());
         if (sco == null){
-			initSuccessful = false;
-            System.err.println(SCRIPT_NAME + ": This script only works with NL2 scene objects");
+            System.throwRuntimeException(SCRIPT_NAME + ": This script only works with NL2 scene objects");
         }
         return sco;
     }
 	
-	private SceneObjectElement getElementOnScoForName(SceneObject sco, String name){ // Basically getElementForName() with error handling - Gratz to bestdani for idea
+	private SceneObjectElement getElementOnScoForName(SceneObject sco, String name){
+		// Basically getElementForName() with error handling - Gratz to bestdani for idea
         SceneObjectElement element = sco.getElementForName(name);
         if (element == null){
-			initSuccessful = false;
-            System.err.println(SCRIPT_NAME + ": Wrong 3d model loaded (Cannot find \"" + name + "\" element)");
+            System.throwRuntimeException(SCRIPT_NAME + ": Wrong 3d model loaded (Cannot find \"" + name + "\" element)");
         }
         return element;
     }

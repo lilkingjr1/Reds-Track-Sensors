@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <material>
+    <description>A brushed metal flathead screw, with normal map and roughness.</description>
+    <preview>textures/screw_flathead_normal.png</preview>
+    <renderpass>
+      <shadercore>Result = tex0;
+Roughness = Mul(tex2, 1.5);
+Metallic = 0.5;</shadercore>
+      <transparency mode="opaque"/>
+      <linearshading/>
+      <custommaterial>
+        <specular r="0.623529" g="0.639216" b="0.654902"/>
+        <shininess exponent="42.3385"/>
+      </custommaterial>
+      <reflection bump="true" fresnelconst="0.3" fresnelvar="0.7"/>
+      <rgbgen mode="bumplighting"/>
+      <texunit>
+        <map>textures/metal_color.jpg</map>
+        <tcgen mode="base"/>
+      </texunit>
+      <texunit>
+        <map>textures/screw_flathead_normal.png</map>
+        <bump mode="normalgloss"/>
+        <tcgen mode="base"/>
+      </texunit>
+      <texunit>
+        <map>textures/metal_roughness.jpg</map>
+        <tcgen mode="base"/>
+      </texunit>
+    </renderpass>
+    <footstepsounds>
+      <footstepsound>intern:data/sounds/walk/metal1.wav</footstepsound>
+      <footstepsound>intern:data/sounds/walk/metal2.wav</footstepsound>
+      <footstepsound>intern:data/sounds/walk/metal3.wav</footstepsound>
+      <footstepsound>intern:data/sounds/walk/metal4.wav</footstepsound>
+    </footstepsounds>
+  </material>
+</root>

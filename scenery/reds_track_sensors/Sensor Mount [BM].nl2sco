@@ -7,7 +7,7 @@
     </model>
     <description>A B&amp;M brake run mount for a single sensor. See object properties for more.</description>
     <defaultinstancename>Sensor Mount [BM]</defaultinstancename>
-    <preview>textures/previews/sensor_mount_bm.png</preview>
+    <preview>materials/previews/sensor_mount_bm.png</preview>
     <usercolor>
       <label>Mount Color</label>
       <index>0</index>
@@ -61,6 +61,6 @@
       <label>Degrees to Rotate (Y Axis):</label>
     </scriptparameter>
     <materialpath name="metal">intern:data/materials/metal/Metal A User0.nl2mat</materialpath>
-    <materialpath name="washer">textures/metal.nl2mat</materialpath>
+    <materialpath name="washer">materials/metal.nl2mat</materialpath>
   </sceneobject>
 </root>

@@ -1,0 +1,31 @@
+/**Special Track Module NL2 Class**
+	Author: David Wolfe (Red-Thirten)
+	Date: 7/21/2021
+	A Java object representing a logic entity that will attach a given SCO to a specified coaster Special Track during run time, relative to where it was placed initially.
+	Licensed under GNU GPLv3 - See LICENSE for more details.
+*/
+
+package util;
+
+import com.nolimitscoaster.SceneObject;
+import com.nolimitscoaster.SpecialTrack;
+import nlvm.math3d.Vector3f;
+
+public class SpecialTrackModule{
+	private SceneObject sco;
+	private SpecialTrack specialTrack;
+	private Vector3f translationFromSpecialTracktoSCO;
+	
+	public SpecialTrackModule(SceneObject sco){ // Default object constructor
+		this.sco = sco; // Assign SCO
+		specialTrack = sco.getSpecialTrackParameter("special_track");
+		translationFromSpecialTracktoSCO = new Vector3f( sco.getTranslation() ); // Get the SCO's translation
+		translationFromSpecialTracktoSCO.sub( specialTrack.getMoveableBranchMatrix(0).getTrans() ); // Subtract the Special Track's translation to get the translation between the two
+	}
+	
+	public void setTranslation(){ // Sets the translation of the SCO relative to the Special Track's current location (translation)
+		Vector3f scoTranslation = new Vector3f( specialTrack.getMoveableBranchMatrix(0).getTrans() );
+		scoTranslation.add(translationFromSpecialTracktoSCO);
+		sco.setTranslation(scoTranslation);
+	}
+}

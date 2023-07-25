@@ -6,7 +6,7 @@
     </model>
     <description>An L Beam for sensors to be mounted to. See object properties for more.</description>
     <defaultinstancename>Sensor L Mount</defaultinstancename>
-    <preview>textures/previews/sensor_l_mount.png</preview>
+    <preview>materials/previews/sensor_l_mount.png</preview>
     <usercolor>
       <label>Mount Color</label>
       <index>0</index>

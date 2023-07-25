@@ -1,4 +1,4 @@
-![Red's Track Sensors](/scenery/reds_track_sensors/textures/previews/overview.jpg?raw=true)
+![Red's Track Sensors](/scenery/reds_track_sensors/materials/previews/overview.jpg?raw=true)
 
 ___
 

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <material>
+    <description>Bottom label texture for the standard proximity sensor, with Entity 0 color and optional scratches coloring.</description>
+    <preview>materials/bottom_label_color.jpg</preview>
+    <renderpass>
+      <shadercore>tmp0 = Mul(tex0, tex2);
+Result = Mul(tmp0, entity0);
+Roughness = tex3;</shadercore>
+      <transparency mode="opaque"/>
+      <linearshading/>
+      <rgbgen mode="bumplighting"/>
+      <texunit>
+        <map>materials/bottom_label_color.jpg</map>
+        <tcgen mode="base"/>
+      </texunit>
+      <texunit>
+        <map>materials/bottom_label_bump.jpg</map>
+        <bump mode="heightgloss" heightscale="10"/>
+        <tcgen mode="base"/>
+      </texunit>
+      <texunit>
+        <animmap frequency="0">
+          <map>intern:data/textures/fx/white.png</map>
+          <map>materials/scratches_color.jpg</map>
+        </animmap>
+        <tcgen mode="base"/>
+      </texunit>
+      <texunit>
+        <animmap frequency="0">
+          <map>intern:data/textures/fx/white.png</map>
+          <map>materials/scratches_roughness.jpg</map>
+        </animmap>
+        <tcgen mode="base"/>
+      </texunit>
+    </renderpass>
+  </material>
+</root>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="models/sensor_l_mount.dae">
+      <clip distance="40"/>
+    </model>
+    <description>An L Beam for sensors to be mounted to. See object properties for more.</description>
+    <defaultinstancename>Sensor L Mount</defaultinstancename>
+    <preview>textures/previews/sensor_l_mount.png</preview>
+    <usercolor>
+      <label>Mount Color</label>
+      <index>0</index>
+      <defaultcolor r="0.501961" g="0.501961" b="0.501961"/>
+    </usercolor>
+    <script>
+      <classpath>scripts</classpath>
+      <class>SensorMount</class>
+      <sharedvm>true</sharedvm>
+      <resource id="LICENSE">LICENSE</resource>
+    </script>
+    <scriptparameter>
+      <type>specialtrack</type>
+      <id>special_track</id>
+      <description>Which special track this should animate/move with. &lt;None&gt; will disable.</description>
+      <label>Special Track to Move With:</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>bool</type>
+      <defaultvalue>false</defaultvalue>
+      <id>enable_track_snap</id>
+      <description>Will snap to the Center of Rails (CoR) of the closest track (within 5m).</description>
+      <label>Enable Snapping to Track CoR (Use settings below)</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>double</type>
+      <defaultvalue>0</defaultvalue>
+      <id>mount_trans_x</id>
+      <description>How far to move the mount in the X dimension, relative to its position on the track&apos;s Center of Rails.</description>
+      <label>CoR Translation X (cm):</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>double</type>
+      <defaultvalue>0</defaultvalue>
+      <id>mount_trans_y</id>
+      <description>How far to move the mount in the Y dimension, relative to its position on the track&apos;s Center of Rails.</description>
+      <label>CoR Translation Y (cm):</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>double</type>
+      <defaultvalue>0</defaultvalue>
+      <id>mount_trans_z</id>
+      <description>How far to move the mount in the Z dimension, relative to its position on the track&apos;s Center of Rails.</description>
+      <label>CoR Translation Z (cm):</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>int</type>
+      <defaultvalue>0</defaultvalue>
+      <id>mount_rot_y</id>
+      <description>Will rotate this amount when snapping is enabled. Used for flipping the orientation of mount if desired.</description>
+      <label>Degrees to Rotate (Y Axis):</label>
+    </scriptparameter>
+    <materialpath name="metal">intern:data/materials/metal/Metal A User0.nl2mat</materialpath>
+  </sceneobject>
+</root>

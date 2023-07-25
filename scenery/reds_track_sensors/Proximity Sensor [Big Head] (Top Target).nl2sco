@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="models/proximity_sensor_bighead.dae">
+      <lod path="models/proximity_sensor_bighead_lod2.dae" distance="2"/>
+      <clip distance="20"/>
+    </model>
+    <description>Large sensing head. Recolorable and scripted to detect train. See object properties for more.</description>
+    <defaultinstancename>Proximity Sensor [Big Head]</defaultinstancename>
+    <preview>textures/previews/proximity_sensor_big.png</preview>
+    <usercolor>
+      <label>Sensor Color</label>
+      <index>0</index>
+      <defaultcolor r="0.254902" g="0.8" b="0.654902"/>
+    </usercolor>
+    <usercolor>
+      <label>Power Light Color</label>
+      <index>1</index>
+      <defaultcolor r="0" g="1" b="0"/>
+    </usercolor>
+    <usercolor>
+      <label>Output Light Color</label>
+      <index>2</index>
+      <defaultcolor r="1" g="1" b="0"/>
+    </usercolor>
+    <script>
+      <classpath>scripts</classpath>
+      <class>ProximitySensor</class>
+      <sharedvm>true</sharedvm>
+      <resource id="LICENSE">LICENSE</resource>
+      <resource id="mounting_config">mounting_config/proximity-sensor_top.cfg</resource>
+    </script>
+    <scriptparameter>
+      <type>string</type>
+      <defaultvalue>Sensor Mounting Rail (5m)</defaultvalue>
+      <id>mount</id>
+      <description>Leave empty to disable. Overridden by Snap-to-Track if enabled below.</description>
+      <label>Name of Mount to Snap To:</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>specialtrack</type>
+      <id>special_track</id>
+      <description>Which special track this should animate/move with. &lt;None&gt; will disable.</description>
+      <label>Special Track to Move With:</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>bool</type>
+      <defaultvalue>false</defaultvalue>
+      <id>dirty</id>
+      <description>Check if you want a dirty/oily texture applied during runtime.</description>
+      <label>Dirty Sensor</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>bool</type>
+      <defaultvalue>false</defaultvalue>
+      <id>mount_flip</id>
+      <description>Flips the mount 180 deg. on the Y axis during runtime.</description>
+      <label>Flip Mount Orientation</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>bool</type>
+      <defaultvalue>false</defaultvalue>
+      <id>mount_hide</id>
+      <description>Hides the mount during runtime.</description>
+      <label>Hide Mount</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>bool</type>
+      <defaultvalue>false</defaultvalue>
+      <id>wire_hide</id>
+      <description>Hides the wire during runtime.</description>
+      <label>Hide Wire</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>bool</type>
+      <defaultvalue>false</defaultvalue>
+      <id>disable_light</id>
+      <description>Disables the output light. Useful for dummy sensors near coaster track.</description>
+      <label>Disable Light</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>bool</type>
+      <defaultvalue>false</defaultvalue>
+      <id>enable_track_snap</id>
+      <description>Only works when Mount Snapping is fully disabled. Will snap to the Center of Rails (CoR) of the closest track (within 5m).</description>
+      <label>Enable Snapping to Track CoR (Use settings below)</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>double</type>
+      <defaultvalue>0</defaultvalue>
+      <id>sensor_trans_x</id>
+      <description>How far to move the mount in the X dimension, relative to its position on the track&apos;s Center of Rails.</description>
+      <label>CoR Translation X (cm):</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>double</type>
+      <defaultvalue>0</defaultvalue>
+      <id>sensor_trans_y</id>
+      <description>How far to move the mount in the Y dimension, relative to its position on the track&apos;s Center of Rails.</description>
+      <label>CoR Translation Y (cm):</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>double</type>
+      <defaultvalue>0</defaultvalue>
+      <id>sensor_trans_z</id>
+      <description>How far to move the mount in the Z dimension, relative to its position on the track&apos;s Center of Rails.</description>
+      <label>CoR Translation Z (cm):</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>int</type>
+      <defaultvalue>0</defaultvalue>
+      <id>sensor_rot_x</id>
+      <description>Will rotate this amount in the X axis, relative to the Center of Rails angle.</description>
+      <label>CoR Rotation X (Deg):</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>int</type>
+      <defaultvalue>0</defaultvalue>
+      <id>sensor_rot_y</id>
+      <description>Will rotate this amount in the Y axis, relative to the Center of Rails angle.</description>
+      <label>CoR Rotation Y (Deg):</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>int</type>
+      <defaultvalue>0</defaultvalue>
+      <id>sensor_rot_z</id>
+      <description>Will rotate this amount in the Z axis, relative to the Center of Rails angle.</description>
+      <label>CoR Rotation Z (Deg):</label>
+    </scriptparameter>
+    <materialpath name="VariKont">textures/VariKont.nl2mat</materialpath>
+    <materialpath name="black_plastic">textures/plastic_black.nl2mat</materialpath>
+    <materialpath name="bottom_label">textures/bottom_label_oldstyle.nl2mat</materialpath>
+    <materialpath name="bullseye">textures/bullseye.nl2mat</materialpath>
+    <materialpath name="colored_plastic">textures/colored_plastic.nl2mat</materialpath>
+    <materialpath name="colored_plastic_0">textures/colored_plastic.nl2mat</materialpath>
+    <materialpath name="metal">textures/metal.nl2mat</materialpath>
+    <materialpath name="metal_galvanized">textures/metal_galvanized.nl2mat</materialpath>
+    <materialpath name="output_light">textures/output_light.nl2mat</materialpath>
+    <materialpath name="power_light">textures/power_light.nl2mat</materialpath>
+    <materialpath name="screw_flathead">textures/screw_flathead.nl2mat</materialpath>
+    <materialpath name="screw_inset">textures/screw_philips_inset.nl2mat</materialpath>
+    <materialpath name="screw_inset_1">textures/screw_philips_inset.nl2mat</materialpath>
+    <materialpath name="screw_inset_2">textures/screw_philips_inset.nl2mat</materialpath>
+  </sceneobject>
+</root>

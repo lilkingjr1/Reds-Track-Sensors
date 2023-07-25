@@ -1,0 +1,268 @@
+<html>
+	<body style="font-family:Segoe UI; font-size:18px;">
+		<img src="textures\previews\overview.jpg" alt="Header Image" width="30%" height="35%">
+		<h4><i>
+			Red's Track Sensors<br>
+			©2021 David W. (Red-Thirten)<br>
+			<a href="mailto:rehlmgaming@gmail.com">rehlmgaming@gmail.com</a><br>
+			Version 1.0, 15 August 2021<br>
+			NL2 Scenery Custom Object (SCO) Package<br>
+		</i></h4>
+		<hr>
+		<p>
+			Thank you very much for downloading my Track Sensors pack!
+		</p>
+		<p>
+			While this pack is completely free, if you like what you see, if you appreciate the months of hard work that went into making it,<br>
+			any donation amount made to the PayPal link below will not only be greatly appreciated, but will help me make more content like this in the future!<br>
+			<form action="https://www.paypal.com/donate" method="post" target="_top">
+				<input type="hidden" name="hosted_button_id" value="MLUE4F2SYUUMY" />
+				<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
+				<img alt="" border="0" src="https://www.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1" />
+			</form>
+		</p>
+		<p>
+			All parts of this pack (models, scripts, etc.) are licensed under the <b>GNU General Public License v3.0.</b><br>
+			Please see the <a href="#usage">"Usage / License" section</a> at the end of this README, or the LICENSE file, for more details on your rights to use this pack in your parks.
+		</p>
+		<hr>
+		<h3>
+			<u>How to Use / Best Practices:</u>
+		</h3>
+		<p>
+			First off, every sensor has object properties (accessible by double clicking the sensor), which include simple things like colors, hiding the mounting bracket, rotating the bracket, or hiding the wire.
+			<br>
+			As for placing, there are <b>three</b> primary ways you can place a sensor: <b><i>Snap to Mount, Snap to Track, or Manual Placement</i></b>.
+		</p>
+		<p>
+			<b>Snap to Mount:</b>
+			<ol style="line-height: 1.7;">
+				<li><b>Choose a mount</b> you would like to use, and place it next to your desired section of track.</li>
+				<li>Either:
+					<ul>
+						<li><b>Manually position</b>, angle, and scale it to your liking on the track.</li>
+						<i><b>OR</b></i><br>
+						<li><b>Enable "Snapping to Track CoR"</b> via the object properties, and adjust the Translation settings below to position the mount in the correct position for your coaster type. This may require trial and error to get it aligned perfectly. However, once you get it right, you can copy the values to any other mount you put down, and they will all align perfectly with the track.</li>
+					</ul>
+				</li>
+				<li>If the mount will rest on a Special Track (ie. transfer track), specify "Special Track to Move With" from the object properties so it will move properly with the track.</li>
+				<li><b>Copy</b> the <b>default name</b> of the mount from the "Name" box at the top (it will be used later).</li>
+				<li><b>Choose a sensor</b> you would like to use, and place it <i>roughly</i> near where you would like it to snap to the rail (this can be done with multiple sensors in various positions).</li>
+				<li>Open the object properties of the sensor, and <b>paste</b> the <b>name</b> of the <b>mount</b> into the <b>"Name of Mount to Snap To"</b> field.<br>
+				This is all you need to do to get a sensor to perfectly snap to a mount.<br>
+				The Mounting Configs (located in <code>/mounting_configs/</code>) are responsible for each sensor type's position, angle, and bracket properties on each mount type, and can be tweaked if you so desire. Any settings in the object properties (ie. flip mounting bracket, hide wire, etc.) will override mounting configs.</li>
+				<li>Lastly, if the sensor will rest on a Special Track, set the special track in object properties as well.</li>
+			</ol>
+		</p>
+		<p>
+			<b>Snap to Track:</b>
+			<ol style="line-height: 1.7;">
+				<li><b>Choose a sensor</b> you would like to use, and place it <i>roughly</i> near the track you would like it to snap to.</li>
+				<li><b>Disable mount snapping</b> by opening object properties and making "Name of Mount to Snap To" <b>completely empty</b>.</li>
+				<li>If the sensor will rest on a Special Track (ie. transfer track), specify "Special Track to Move With" from the object properties so it will move properly with the track.</li>
+				<li><b>Enable "Snapping to Track CoR"</b>, and adjust the Translation/Rotation settings below to position the sensor in the correct position for your coaster type. This may require trial and error to get it aligned perfectly. However, once you get it right, you can copy the values to any other sensor you put down, and they will all align perfectly with the track.</li>
+			</ol>
+		</p>
+		<p>
+			<b>Manual Placement:</b>
+			<ol style="line-height: 1.7;">
+				<li><b>Choose a sensor</b> you would like to use, and manually position, angle, and scale it to you liking, anywhere you would like.</li>
+				<li><b>Disable mount snapping</b> by opening object properties and making "Name of Mount to Snap To" <b>completely empty</b>.</li>
+				<li>Also <b>disable "Enable Snapping to Track CoR"</b> if it isn't already disabled.</li>
+				<li>If the sensor will rest on a Special Track (ie. transfer track), specify "Special Track to Move With" from the object properties so it will move properly with the track.</li>
+			</ol>
+		</p>
+		<hr>
+		<style type="text/css">
+			table {
+				border: 4px solid rgb(65, 204, 167);
+				width: 70%;
+			}
+			td, th {
+				border: 1px solid rgb(190, 190, 190);
+				padding: 7px 5px;
+			}
+			th:nth-child(even) {
+				background-color: rgb(235, 235, 235);
+			}
+			tr:nth-child(even) {
+				background-color: rgb(235, 235, 235);
+			}
+			td {
+				text-align: center;
+			}
+		</style>
+		<table>
+			<caption><h3><u>Sensor/Mount Auto-Snap Compatibility Table</u></h3></caption>
+			<tr>
+				<td style="width:20%; text-align:right;">Proximity Sensors:</td>
+				<th style="width:7%;">Regular (Side)</th>
+				<th style="width:7%;">Regular (Top)</th>
+				<th style="width:7%;">Old Style (Side)</th>
+				<th style="width:7%;">Old Style (Top)</th>
+				<th style="width:7%;">Big Head (Top)</th>
+				<th style="width:7%;">Small (Side)</th>
+				<th style="width:7%;">Small (Top)</th>
+				<th style="width:7%;">Square</th>
+			</tr>
+			<tr>
+				<th style="text-align: left;">Sensor Mounting Rail (5m)</th>
+				<td style="background-color: lightgreen;">✔</td>
+				<td style="background-color: lightgreen;">✔</td>
+				<td style="background-color: lightgreen;">✔</td>
+				<td style="background-color: lightgreen;">✔</td>
+				<td style="background-color: lightgreen;">✔</td>
+				<td style="background-color: lightgreen;">✔</td>
+				<td style="background-color: lightgreen;">✔</td>
+				<td style="background-color: lightgreen;">✔</td>
+			</tr>
+			<tr>
+				<th style="text-align: left;">Sensor Mounting Rail [Horiz] (1m)</th>
+				<td style="background-color: lightgreen;">✔</td>
+				<td style="background-color: red;">❌</td>
+				<td style="background-color: lightgreen;">✔</td>
+				<td style="background-color: red;">❌</td>
+				<td style="background-color: red;">❌</td>
+				<td style="background-color: lightgreen;">✔</td>
+				<td style="background-color: lightgreen;">✔</td>
+				<td style="background-color: lightgreen;">✔</td>
+			</tr>
+			<tr>
+				<th style="text-align: left;">Sensor Mount [BM]</th>
+				<td style="background-color: lightgreen;">✔</td>
+				<td style="background-color: lightgreen;">✔</td>
+				<td style="background-color: lightgreen;">✔</td>
+				<td style="background-color: lightgreen;">✔</td>
+				<td style="background-color: lightgreen;">✔</td>
+				<td style="background-color: lightgreen;">✔</td>
+				<td style="background-color: lightgreen;">✔</td>
+				<td style="background-color: red;">❌</td>
+			</tr>
+			<tr>
+				<th style="text-align: left;">Sensor L Mount</th>
+				<td style="background-color: lightgreen;">✔</td>
+				<td style="background-color: lightgreen;">✔</td>
+				<td style="background-color: lightgreen;">✔</td>
+				<td style="background-color: lightgreen;">✔</td>
+				<td style="background-color: lightgreen;">✔</td>
+				<td style="background-color: lightgreen;">✔</td>
+				<td style="background-color: lightgreen;">✔</td>
+				<td style="background-color: lightgreen;">✔</td>
+			</tr>
+			<tr>
+				<th style="text-align: left;">Sensor Mounting Rail [Arrow]</th>
+				<td style="background-color: lightgreen;">✔</td>
+				<td style="background-color: red;">❌</td>
+				<td style="background-color: lightgreen;">✔</td>
+				<td style="background-color: red;">❌</td>
+				<td style="background-color: red;">❌</td>
+				<td style="background-color: lightgreen;">✔</td>
+				<td style="background-color: red;">❌</td>
+				<td style="background-color: lightgreen;">✔</td>
+			</tr>
+			<tr>
+				<th style="text-align: left;">Wooden Sensor Mount</th>
+				<td style="background-color: lightgreen;">✔</td>
+				<td style="background-color: lightgreen;">✔</td>
+				<td style="background-color: lightgreen;">✔</td>
+				<td style="background-color: lightgreen;">✔</td>
+				<td style="background-color: lightgreen;">✔</td>
+				<td style="background-color: lightgreen;">✔</td>
+				<td style="background-color: lightgreen;">✔</td>
+				<td style="background-color: lightgreen;">✔</td>
+			</tr>
+		</table>
+		<hr>
+		<h3>
+			<u>Change Log:</u>
+		</h3>
+		<ul>
+			<li>[v1.0 Release]
+				<ul>
+					<li>Added new demo park.</li>
+					<li>Added functionality to orient mounts correctly for inverted coasters.</li>
+					<li>Added functionality to disable the output light, if desired, for "dummy" sensors close to track.</li>
+					<li>Added "Proximity Sensor [Old Style] (Top Target)".</li>
+					<li>Added "Proximity Sensor [Old Style] (Side Target)".</li>
+					<li>Added "Proximity Sensor [Big Head] (Top Target)".</li>
+					<li>Added "Sensor L Mount".</li>
+					<li>Added "Sensor Mount [BM]".</li>
+					<li>Updated mounting config files to account for the new mounts.</li>
+					<li>Adjusted sensor snapping method precedence and related code efficiency. Snap-to-Track will now take precedence, and it will prevent the expensive Snap-to-Mount code from running.</li>
+					<li>Added "CoR Rotation" X & Z parameters to all sensors for Snap-to-Track.</li>
+					<li>Fixed some sensors' LODs having missing textures.</li>
+					<li>Fixed default names of newer sensors.</li>
+					<li>Fixed SCO preview images.</li>
+					<li>Minor adjustments/cleanup to NL2MATs.</li>
+					<li>Minor adjustments to README.</li>
+				</ul>
+			</li>
+			<li>[v1.1 Beta]
+				<ul>
+					<li>Renamed "Proximity Sensor" to "Proximity Sensor (Top Target)".</li>
+					<li>Added "Proximity Sensor (Side Target)".</li>
+					<li>Renamed "Proximity Sensor (Small)" to "Proximity Sensor [Small] (Top Target)".</li>
+					<li>Added "Proximity Sensor [Small] (Side Target)".</li>
+					<li>Rearranged/added mounting config files to account for the above changes.</li>
+					<li>Added a Sensor/Mount Auto-Snap Compatibility Table to the README.</li>
+				</ul>
+			</li>
+			<li>[v1.0 Beta]
+				<ul>
+					<li>Initial release! :D</li>
+				</ul>
+			</li>
+		</ul>
+		<hr>
+		<h3>
+			<u>Credits / Acknowledgment:</u>
+		</h3>
+		<ul style="line-height: 2;">
+			<li><b><a href="https://www.pepperl-fuchs.com/" target="_blank">Pepperl+Fuchs, Inc.</a></b> -- Sensors were modeled/textured with love by referencing the iconic sensor products this company manufactures in real life.<br>
+			<i style="font-size: .9rem">*This pack and it's contents are in no way associated with, endorsed by, or represent Pepperl+Fuchs in any way. These scenery objects should not be used in any professional or profitable application without the prior approval of Pepperl+Fuchs.</i></li>
+			<li><b>RipeOrange</b> -- Provided help with the linear algebra, trigonometry, and vector mathematics that allows for objects to snap to each other.<br>
+			<li><b><a href="http://wiki.unity3d.com/index.php/3d_Math_functions" target="_blank">Bit Barrel Media (Unity 3D)</a></b> -- Provided the <code>nearestPointOnLine()</code> function, also allowing for objects to snap to each other.<br>
+			<li><b>Kriov</b> -- Dive & Eurofighter coasters for demo park.</li>
+			<li><b>poolcoasterguy</b> -- Hybrid coaster for demo park (converted to Minetrain for demo).</li>
+			<li><b>ZoniesCoasters</b> -- Wooden coaster for demo park.</li>
+			<li><b>Ole Lange</b> -- Arrow coaster for demo park.</li>
+			<li><b>caliluke</b> -- Beta testing, feedback, and demo coaster procurement.</li>
+			<li><b>Freddie Ross</b> -- Beta testing and feedback.</li>
+			<li><b>bradhall</b> -- Beta testing and feedback.</li>
+			<li><b><a href="https://steamcommunity.com/profiles/76561197967797620/myworkshopfiles/?appid=301320" target="_blank">bestdani</a></b> -- Some code and a lot of scripting support.<br>
+			<i style="font-size: 1rem">His <a href="https://steamcommunity.com/sharedfiles/filedetails/?id=921150269" target="_blank">open-source scripts</a> were a huge learning resource for me, and a large foundation for the scripts in this pack. This pack would likely not be possible without him, so much gratz!</i></li>
+		</ul>
+		<hr>
+		<h3 id="usage">
+			<u>Usage / License:</u>
+		</h3>
+		<p>
+			Like mentioned before, this pack is licensed under the <b>GNU General Public License v3.0</b> (GNU GPLv3).<br>
+			The <code>LICENSE</code> file can be found in <code>\scenery\reds_track_sensors</code>
+		</p>
+		<p>
+			<b>"But what the heck does that mean Red? <i>Legalese scares me...</i>"</b>
+		</p>
+		<p>
+			<u>No worries! Here's an easy break down to help you meet the requirements:</u> 😊<br>
+			<ul style="line-height: 2;">
+				<li>First off, a great summary of what you can and can't do with the pack <a href="https://choosealicense.com/licenses/gpl-3.0/" target="_blank">can be found here</a>.</li>
+				<li>
+					You are totally free to use this pack in any of your parks that you plan to share with other people (ie. Steam Workshop, forums, etc.)<br>
+					<b>as long as you...</b>
+					<ul>
+						<li>Keep the <code>LICENSE</code> file in-tact and present within the pack's files.</li>
+						<li>This includes when you package the park into a <code>.nl2pkg</code> file (however, the SCOs should automatically package it with them, so no worries about having to do it manually).</li>
+						<li>Crediting the pack and the author in your project or project's description is not <i>technically</i> required by the license, but is greatly appreciated.</li>
+					</ul>
+				</li>
+				<li>The license requires that all source code must be disclosed and available. That <i>technically</i> means locked/encrypted <code>.nl2pkg</code>'s break the license. <b>However</b>, I am willing to ignore this requirement <b>as long as the pack and author are properly credited</b>, visible outside of the locked package.</li>
+				<li>You may modify and improve any part of the pack you would like, as long as the license stays in-tact and changes remain available to the public. <b>This includes locked/encrypted <code>.nl2pkg</code>'s</b>; meaning, no, modified works of this package are not allowed to be encrypted! If you have an addition you would like made to the original pack to be used in a private park, please feel free to contact me and I will gladly look into adding it.</li>
+				<li>Lastly, you can <i>technically</i> redistribute modified versions of this pack if you really want to, but I would much rather prefer you provide improvements to me so I can incorporate them into the official/original pack. You will be be credited too! I promise! 😉
+			</ul>
+		</p>
+		<hr>
+		<br>
+		<h6>Wow, you really read the whole thing didn't you? I'm so proud of you; here's a cookie 🍪</h6>
+	</body>
+</html>

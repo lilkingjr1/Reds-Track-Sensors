@@ -1,0 +1,302 @@
+// Proximity Sensor NL2 Script
+// David Wolfe (Red-Thirten)
+// 4/29/2022
+// Initializes the proximity sensor, adjusts it's physical properties via a parsed config file or user settings, and animates it's output light.
+// Licensed under GNU GPLv3 - See LICENSE for more details.
+
+import com.nolimitscoaster.Script;
+import com.nolimitscoaster.SceneObject;
+import com.nolimitscoaster.SceneObjectElement;
+import com.nolimitscoaster.TrackPos;
+import com.nolimitscoaster.TrackTrigger;
+import com.nolimitscoaster.TrackTriggerListener;
+import com.nolimitscoaster.Train;
+import com.nolimitscoaster.Tools;
+import nlvm.lang.Integer;
+import nlvm.lang.StringBuilder;
+import nlvm.math3d.Vector3f;
+import nlvm.lang.Math;
+
+public class ProximitySensor extends Script implements TrackTriggerListener{
+	protected String SCRIPT_NAME = "Proximity Sensor";		// Script name for debugging
+	protected String SENSOR_ELEMENT_NAME = "sensor";		// Main sensor body element name
+	protected String LIGHT_ELEMENT_NAME = "output";			// Output light element name
+	protected String MOUNT_ELEMENT_NAME = "mount";			// Mounting hardware element name
+	protected String WIRE_ELEMENT_NAME = "wire";			// Wire element name
+	protected float TRACK_SEARCH_DIST = 5.f;				// Minimum distance sensor needs to be near track to enable lights
+	
+	private SceneObjectElement light;
+	private TrackTrigger sensorTrigger;
+	
+	private SpecialTrackModule specialTrackLogic;
+	
+	private bool initSuccessful = true;
+	private bool lightDisabled = false;
+	
+	public bool onLateInit(){ // On late initialization of Play simulation
+		// Get and assign local sco
+		SceneObject sco = getScoFromParentEntity();
+		
+		// Get all elements, and fail if invalid.
+		light = getElementOnScoForName(sco, LIGHT_ELEMENT_NAME);
+		SceneObjectElement sensor = getElementOnScoForName(sco, SENSOR_ELEMENT_NAME);
+		SceneObjectElement mount = getElementOnScoForName(sco, MOUNT_ELEMENT_NAME);
+		SceneObjectElement wire = getElementOnScoForName(sco, WIRE_ELEMENT_NAME);
+		if (!initSuccessful){ return false; }
+		
+		String snapMountName = sco.getStringParameter("mount"); // Get the name of the mount-to-snap-to
+		// Snap-to-Mount if enabled and Snap-to-Track is disabled
+		if (!sco.getBooleanParameter("enable_track_snap").boolValue() && snapMountName.length() > 0){
+			SceneObject[] allMounts = sim.getSceneObjectsWithName(snapMountName); // Get list of all mounts with same name
+			if (allMounts.length > 0){ // Any mount(s) found
+				// Compare all mounts' elements to find closest
+				SceneObject closestMount = allMounts[0];
+				for ( int i = 1; i < allMounts.length; i++ ) {
+					// Note: MOUNT_ELEMENT_NAME is referring to the SensorMount object's variable
+					if (sco.getTranslation().distance(allMounts[i].getElementForName(SensorMount.MOUNT_ELEMENT_NAME).getAbsoluteMatrix().getTrans())
+					< sco.getTranslation().distance(closestMount.getElementForName(SensorMount.MOUNT_ELEMENT_NAME).getAbsoluteMatrix().getTrans())) {
+						closestMount = allMounts[i];
+					}
+				}
+				// Snap to closest mount
+				// Store original SCO orientation values
+				Vector3f scoTransOrig = sco.getTranslation();
+				Vector3f scoRotationOrig = sco.getRotation();
+				Vector3f scoScaleOrig = sco.getScale();
+				// Set SCO to matrix of mount element to obtain the mount's element's rotation data.
+				// Currently, there is no easy way to obtain rotation data of a foreign element directly, because SceneObjectElement and Matrix4x4f lack "getRotation()" functions.
+				sco.setMatrix(closestMount.getElementForName(SensorMount.MOUNT_ELEMENT_NAME).getAbsoluteMatrix());
+				sco.setScale(scoScaleOrig); // Restore original scale
+				float xAngle = sco.getRotation().x; // Define X Angle of mount element (via SCO's new rotation data)
+				float yAngle = sco.getRotation().y; // Define Y Angle of mount element (via SCO's new rotation data)
+				// Calculate a unit vector on the +Z axis relative to the mount element's angle.
+				// This represents a rudimentary "line" that all the mounts inherently define with their geometry.
+				Vector3f lineVec = new Vector3f( (float) Math.cos(xAngle) * (float) Math.sin(yAngle), -(float) Math.sin(xAngle), (float) Math.cos(xAngle) * (float) Math.cos(yAngle) );
+				// Using the mount's translation, "line" vector and the SCO's original translation, 
+				// calculate the closest absolute translation point on the mount from the sensor, and set the sensor to it.
+				sco.setTranslation( nearestPointOnLine(closestMount.getElementForName(SensorMount.MOUNT_ELEMENT_NAME).getAbsoluteMatrix().getTrans(), lineVec, scoTransOrig) );
+				// Set correct orientation of sensor for the given mount name via the config file
+				Vector3f[] orientValues = getSnapOrientFromConfig(snapMountName);
+				if (orientValues != null){
+					sensor.setTranslation(orientValues[0]); // Set element translation from parsed config values
+					sensor.setRotation(orientValues[1]); // Set element rotation from parsed config values
+					if (orientValues[2].x == 1){ // Hide mount element, if configured
+						mount.setVisible(false);
+					}
+					else if (orientValues[2].y == 1){ // Rotate mount element 180 deg. on the Y axis, if configured
+						mount.setRotation(0.f, (float) Math.PI, 0.f);
+					}
+					if (orientValues[2].z == 1){ // Hide wire element, if configured
+						wire.setVisible(false);
+					}
+				}
+				else{ // Could not find in config file
+					System.out.println(sco.getName() + ": Could not find mount by the name of \"" + snapMountName + "\" in the config file.\n"
+						+ "\tUnless you modified your mounting config files, ensure the mount's DEFAULT name is used.\n"
+						+ "\tDefaulting to sensor's original position/rotation.");
+					sco.setTranslation(scoTransOrig); // Set back to original orientation
+					sco.setRotation(scoRotationOrig);
+				}
+			}
+			else{ // No mounts found
+				System.out.println(sco.getName() + ": Could not find mount by the name of \"" + snapMountName + "\" anywhere in the simulation.\n"
+					+ "\tEnsure your \"Name of Mount to Snap To\" parameter matches the name of the mount EXACTLY.\n"
+					+ "\tDefaulting to sensor's original position/rotation.");
+			}
+		}
+		
+		// Find closes track position to sensor's current position for indicator light and snapping (if enabled)
+		TrackPos trackPos = sim.findNearestCoasterTrack(sensor.getAbsoluteMatrix().getTrans(), TRACK_SEARCH_DIST);
+		if (trackPos != null){
+			// Set up track trigger for indicator light
+			sensorTrigger = TrackTrigger.createTrackTriggerAtOffset(trackPos, 0);
+			sensorTrigger.addTrackTriggerListener(this);
+			
+			// Snap SCO to closest track piece if enabled, and adjust sub-assembly sensor element attributes as specified.
+			// This keeps all matrix adjustments relative to the track position and angle.
+			if (sco.getBooleanParameter("enable_track_snap").boolValue()){
+				Vector3f scoScaleOrig = sco.getScale(); // Store original SCO scale
+				sco.setMatrix(trackPos.getCenterRailsMatrix()); // Set SCO matrix to CoR matrix
+				sco.setScale(scoScaleOrig); // Restore original SCO scale
+				sensor.setTranslation( // Set sensor translation based on parameters (centimeters to meters)
+					sco.getDoubleParameter("sensor_trans_x").floatValue() / 100,
+					sco.getDoubleParameter("sensor_trans_z").floatValue() / 100,
+					sco.getDoubleParameter("sensor_trans_y").floatValue() / 100
+				);
+				sensor.setRotation( // Set sensor rotation based on parameters (degrees to radians)
+					(float) Math.toRadians(sco.getIntegerParameter("sensor_rot_x").doubleValue()),
+					(float) Math.toRadians(sco.getIntegerParameter("sensor_rot_y").doubleValue()),
+					(float) Math.toRadians(sco.getIntegerParameter("sensor_rot_z").doubleValue())
+				);
+			}
+		}
+		else{
+			System.out.println(sco.getName() + ": Coaster track was not found within " + TRACK_SEARCH_DIST + " meters. Defaulting to passive behavior.");
+		}
+		
+		// If set to attach to special track, set up the logic object for it
+		if (sco.getSpecialTrackParameter("special_track") != null){
+			specialTrackLogic = new SpecialTrackModule(sco);
+		}
+		
+		// Hide mount or flip mount orientation if specified
+		if (sco.getBooleanParameter("mount_hide").boolValue()){
+			mount.setVisible(false);
+		}
+		else if (sco.getBooleanParameter("mount_flip").boolValue()){
+			mount.setRotation(0.f, (float) Math.PI, 0.f);
+		}
+		
+		// Hide wire if specified
+		if (sco.getBooleanParameter("wire_hide").boolValue()){
+			wire.setVisible(false);
+		}
+		
+		// Set textures to be dirty if specified
+		if (sco.getBooleanParameter("dirty").boolValue()){
+			sensor.setTextureAnimationIndex(1);
+			wire.setTextureAnimationIndex(1);
+		}
+		else{
+			sensor.setTextureAnimationIndex(0);
+			wire.setTextureAnimationIndex(0);
+		}
+		
+		// Disable output light if specified
+		if (sco.getBooleanParameter("disable_light").boolValue()){
+			lightDisabled = true;
+		}
+		
+		// Set output light to off
+		light.setTextureAnimationIndex(0);
+		
+		return true;
+	}
+	
+	private SceneObject getScoFromParentEntity(){ // Returns the SceneObject via the parent entity ID with error handling
+        SceneObject sco = sim.getSceneObjectForEntityId(getParentEntityId());
+        if (sco == null){
+			initSuccessful = false;
+            System.err.println(SCRIPT_NAME + ": This script only works with NL2 scene objects");
+        }
+        return sco;
+    }
+	
+	private SceneObjectElement getElementOnScoForName(SceneObject sco, String name){ // Basically getElementForName() with error handling - Gratz to bestdani for idea
+        SceneObjectElement element = sco.getElementForName(name);
+        if (element == null){
+			initSuccessful = false;
+            System.err.println(SCRIPT_NAME + ": Wrong 3d model loaded (Cannot find \"" + name + "\" element)");
+        }
+        return element;
+    }
+	
+	// Returns translation, rotation, and style vectors from parsed config file for a specified mount name. Returns null if mount is not found in config.
+	// Warning: Parsing does not sanitize config files with incorrect syntax, but does support truncated value lists after the mount name string value.
+	private Vector3f[] getSnapOrientFromConfig(String mountName){
+		// Input the mounting config as a string via the resource path
+		String rawText = Tools.loadTextFileFromResource(getResourcePathForId("mounting_config"));
+		if (rawText == null){ return null; } // File is invalid/missing
+		int i = 0, v = 0; // "i" is the global character index, "v" is a value parsing character index
+		while (i < rawText.length()){ // For the length of the string / for all entries
+			while (rawText.charAt(i) != '{'){ i++; } // Increment until first mount entry found
+			while (rawText.charAt(i) != '"'){ i++; } // Increment until mount name string found
+			int nameStart = i+1; // Name starts on character after '"' character; record name start position
+			i++; // Move index to next character
+			while (rawText.charAt(i) != '"'){ i++; } // Increment until end of name string found
+			int nameEnd = i; // Record name end position
+			if (rawText.substring(nameStart, nameEnd).equals(mountName)){ // If the substring equals specified mount name
+				while (rawText.charAt(i-1) != ','){ i++; } // Increment to first data value
+				// Define value storage integer array of 9 values:
+				// 		TransX (mm), TransY (mm), TransZ (mm), RotX (deg), RotY (deg), RotZ (deg), Hide Mounting Hardware (bool), Flip Mounting Hardware (bool), Hide Wire (bool)
+				// All values have to be integer because NL2 only has an integer parser for strings
+				int[] orientValues = new int[9];
+				StringBuilder num = new StringBuilder();
+				do { // Blind increment loop
+					if (isCharNumber(rawText.charAt(i))){ // If character is a number, append it to the string builder
+						num.append(rawText.charAt(i));
+					}
+					if ((rawText.charAt(i) == ',' || rawText.charAt(i) == '}') && num.length() > 0){ // If a delimiter or entry end is found, and the value isn't null
+						orientValues[v] = Integer.parseInt(num.toString()); // Parse the built string to an integer and store it
+						v++; // Increment to the next orientation value to store
+						if (rawText.charAt(i) == '}'){ break; } // If at end of entry, exit loop
+						num = new StringBuilder(); // Create a new string builder for next value
+					}
+					i++; // Start on next character for next value
+				} while(i < rawText.length());
+				// Define translation, rotation, and style vectors
+				// Convert translation values from millimeters to meters
+				Vector3f trans = new Vector3f(
+					((float) orientValues[0])/1000,
+					((float) orientValues[1])/1000,
+					((float) orientValues[2])/1000
+				);
+				// Convert rotation values from degrees to radians
+				Vector3f angle = new Vector3f(
+					(float) Math.toRadians(orientValues[3]),
+					(float) Math.toRadians(orientValues[4]),
+					(float) Math.toRadians(orientValues[5])
+				);
+				// Style booleans stored as floats and interpreted externally
+				Vector3f properties = new Vector3f(
+					(float) orientValues[6],
+					(float) orientValues[7],
+					(float) orientValues[8]
+				);
+				return new Vector3f[] {trans, angle, properties}; // Exit loop by returning final vectors with values
+			}
+			while (i < rawText.length() && rawText.charAt(i-1) != '}'){ i++; } // Increment to end of entry
+		}
+		return null; // Mount not found in config file
+	}
+	
+	// Returns true if the given character is part of an integer number
+	private bool isCharNumber(char c){
+		switch(c){
+			case '0':
+			case '1':
+			case '2':
+			case '3':
+			case '4':
+			case '5':
+			case '6':
+			case '7':
+			case '8':
+			case '9':
+			case '-':
+				return true;
+		}
+		return false;
+	}
+	
+	// Returns translation matrix of the closest point on a line (defined from a point and vector) from another point
+	// Gratz to Bit Barrel Media (Unity 3D) for the basis of this function.
+	// It does vector math magic, of which I do not understand. Therefore, I cannot comment on what it does, lol.
+	public Vector3f nearestPointOnLine(Vector3f linePoint, Vector3f lineVec, Vector3f point){
+		Vector3f _point = point.dup();
+		Vector3f _lineVec = lineVec.dup();
+		_point.sub(linePoint);
+		float t = _point.dot(_lineVec);
+		_lineVec.mul(t);
+		_lineVec.add(linePoint);
+		return _lineVec;
+	}
+	
+	public void onTrainEntering(TrackTrigger trigger, Train train){
+		if (!lightDisabled && trigger == sensorTrigger){
+			light.setTextureAnimationIndex(1); // Turn indicator light on
+		}
+	}
+	
+	public void onTrainLeaving(TrackTrigger trigger, Train train){
+		if (trigger == sensorTrigger){
+			light.setTextureAnimationIndex(0); // Turn indicator light off
+		}
+	}
+	
+	public void onNextFrame(float tick){
+		if (specialTrackLogic != null){ // If set to attach to special track, set translation of SCO
+			specialTrackLogic.setTranslation();
+		}
+	}
+}

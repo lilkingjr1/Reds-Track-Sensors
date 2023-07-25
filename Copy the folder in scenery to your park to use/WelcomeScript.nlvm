@@ -1,0 +1,34 @@
+// Pack Welcome NL2 Script
+// David Wolfe (Red-Thirten)
+// 8/11/2021
+// Thanks the user for downloading the pack and informs them of the README.
+
+import com.nolimitscoaster.Script;
+import com.nolimitscoaster.Coaster;
+
+public class WelcomeScript extends Script{
+	private Coaster coaster;
+	private bool welcomePrinted = false;
+	
+	public bool onInit(){ // On initialization of Play simulation
+		coaster = sim.getCoasterForEntityId(getParentEntityId());
+		return true;
+	}
+	
+	private void printWelcome(){ // Prints welcome message and flips one-time bit (bool)
+		System.err.println("HEY! No error! Just wanted to thank you very much for downloading my Track Sensors pack!");
+		System.err.println("If you have any questions, please check out the easy README.html in \\scenery\\reds_track_sensors.");
+		System.err.println("I recommend checking out all the different rides in this park.");
+		System.err.println("Each one demonstrates different ways you can use the pack.");
+		System.err.println("\nHappy Sensing! :D");
+		System.err.println(" -- Red-Thirten");
+		welcomePrinted = true;
+	}
+	
+	public void onNextFrame(float tick){
+		// Hacky way to print welcome message a short time after initialization
+		if (!welcomePrinted && coaster.getSection("Station").getTrainOnSection().getHarnessState() == 0.f){
+			printWelcome();
+		}
+	}
+}

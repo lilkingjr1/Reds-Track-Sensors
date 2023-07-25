@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <material>
+    <description>A brushed metal texture, with normal map, metalness, and roughness.</description>
+    <preview>materials/metal_color.jpg</preview>
+    <renderpass>
+      <shadercore>Result = tex0;
+Roughness = tex2;</shadercore>
+      <transparency mode="opaque"/>
+      <linearshading/>
+      <custommaterial>
+        <specular r="0.623529" g="0.639216" b="0.654902"/>
+        <shininess exponent="42.3385"/>
+      </custommaterial>
+      <reflection bump="true" fresnelconst="0.4" fresnelvar="0.7"/>
+      <rgbgen mode="bumplighting"/>
+      <texunit>
+        <map>materials/metal_color.jpg</map>
+        <tcgen mode="base"/>
+      </texunit>
+      <texunit>
+        <map>materials/metal_normal.jpg</map>
+        <bump mode="normalgloss"/>
+        <tcgen mode="base"/>
+      </texunit>
+      <texunit>
+        <map>materials/metal_roughness.jpg</map>
+        <tcgen mode="base"/>
+      </texunit>
+    </renderpass>
+  </material>
+</root>
